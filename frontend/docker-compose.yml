@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80" # Tu accèdes via http://localhost:3000
+    volumes:
+      - .:/app
+    environment:
+      - NODE_ENV=production

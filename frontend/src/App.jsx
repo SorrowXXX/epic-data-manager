@@ -1,24 +1,15 @@
-import { useEffect, useState } from 'react';
+import React from 'react'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import AuthRoutes from './routes/AuthRoutes';
+import './index.css'
 
 function App() {
-    const [schemas, setSchemas] = useState([]);
-
-    useEffect(() => {
-        fetch('http://localhost:3001/api/schemas')
-            .then(res => res.json())
-            .then(data => setSchemas(data.schemas))
-            .catch(err => console.error(err));
-    }, []);
-
     return (
-        <div>
-            <h1>Select Schema</h1>
-            <select>
-                {schemas.map(schema => (
-                    <option key={schema} value={schema}>{schema}</option>
-                ))}
-            </select>
-        </div>
+        <Router>
+            <Routes>
+                <Route path="/*" element={<AuthRoutes />} />
+            </Routes>
+        </Router>
     );
 }
 
