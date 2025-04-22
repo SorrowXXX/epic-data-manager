@@ -1,21 +1,26 @@
 import mariadb from 'mariadb';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
-export const pool = mariadb.createPool({
+const pool = mariadb.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
     connectionLimit: 5
 });
 
+export async function getConnection() {
+    return await pool.getConnection();
+}
+
 export async function getSchemas() {
-    let conn;
+    const conn = await getConnection();
     try {
-        conn = await pool.getConnection();
         const rows = await conn.query("SHOW DATABASES");
         return rows.map(row => row.Database);
     } finally {
-        if (conn) conn.release();
+        conn.release();
     }
 }
