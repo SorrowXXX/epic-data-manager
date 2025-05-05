@@ -9,23 +9,23 @@ const SECRET = process.env.JWT_SECRET || 'secret-key';
 export async function register(req, res) {
     const { username, email, password } = req.body;
 
-    if (!username || !email || !password) {
-        const { status, body } = responses.missingCredentials;
+        if (!username || !email || !password) {
+            const { status, body } = responses.missingCredentials;
+            return res.status(status).json(body);
+        }
+
+        const existingUser = await findUserByUsername(username);
+        if (existingUser) {
+            const { status, body } = responses.usernameTaken;
+            return res.status(status).json(body);
+        }
+
+        const hash = await bcrypt.hash(password, 10);
+        await insertUser(uuidv4(), username, email, hash);
+
+        const { status, body } = responses.userRegistered;
         return res.status(status).json(body);
     }
-
-    const existingUser = await findUserByUsername(username);
-    if (existingUser) {
-        const { status, body } = responses.usernameTaken;
-        return res.status(status).json(body);
-    }
-
-    const hash = await bcrypt.hash(password, 10);
-    await insertUser(uuidv4(), username, email, hash);
-
-    const { status, body } = responses.userRegistered;
-    return res.status(status).json(body);
-}
 
 export async function login(req, res) {
     const { username, password } = req.body;

@@ -1,9 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -24,7 +27,7 @@ const LoginForm = () => {
             }
 
             localStorage.setItem('token', data.token);
-            alert('Connexion réussie ✅');
+            navigate('/home');
         } catch (err) {
             setError('Erreur réseau ou serveur');
             console.error(err);
